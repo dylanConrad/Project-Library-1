@@ -17,36 +17,28 @@ function getBooksBorrowedCount(books) {
 }
 
 function getMostCommonGenres(books) { 
-  let result = [];
-  let genres = [];
-  
-  for (let i in books) { //creates array of genres; working fine
-    genres.push(books[i].genre);   
-  }
-  for (let j = 0; j < genres.length; j++) {
-    let tempOb = {name: "", count: 0};
-    let check = 0;
-    tempOb.name = genres[j];
-    tempOb.count = getCount(genres, genres[j]); //this working fine to get count of each genre
-    const match = result.find((check) => JSON.stringify(check) === JSON.stringify(tempOb));
-    if (match === undefined) result.push(tempOb);
-  }
-  console.log(result);
-  result.sort((countA, countB) => countA.count < countB.count ? 1 : -1);
-  return result.slice(0, 5);
+  const genreArr = books.reduce((result, book) => {
+    result.push(book.genre);
+    return result;
+  }, []);
+  const finalResult = getResult(genreArr);
+  finalResult.sort((countA, countB) => countA.count < countB.count ? 1 : -1);
+  return finalResult.slice(0, 5);
 }
-function getCount(genres, genre) {
-  let arr = [];
-  for (let i in genres) {
-    if (genres[i] === genre) arr.push(genre);
-  }
-  return arr.length;
-}
-  
 
+function getResult(genreArr) {
+  let finalResult = [];
+  for (let i = 0; i < genreArr.length; i++) {
+    const genres = genreArr.filter((genre) => genre === genreArr[i]);
+    const tempOb = {name: genreArr[i], count: genres.length};
+    const match = finalResult.find((check) => JSON.stringify(check) === JSON.stringify(tempOb));
+    if (match === undefined) finalResult.push(tempOb);
+  }
+  return finalResult;
+}
+ 
 function getMostPopularBooks(books) { 
   let result = [];
-  
   for (let i in books) {
     let object = {name: "", count: 0};
     object.name = books[i].title;
@@ -64,7 +56,6 @@ function getMostPopularAuthors(books, authors) {
     let book = books[i];
     tempOb.name = getName(authors, book);
     tempOb.count = books[i].borrows.length;
-    console.log(tempOb);
     result.push(tempOb);
   }
   result.sort((bookA, bookB) => bookA.count < bookB.count ? 1 : -1); 
