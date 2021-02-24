@@ -11,20 +11,18 @@ function findBookById(books, id) {
 }
 
 function partitionBooksByBorrowedStatus(books) {
-  let results = [];
   let takenOut = [];
   let returned = [];
   for (let i in books) {
     books[i].borrows[0].returned === false ? takenOut.push(books[i]) : returned.push(books[i]);  
   }
-  results.push(takenOut, returned);
+  const results = [takenOut, returned];
   return results;
 }
 
 function getBorrowersForBook(book, accounts) {
   let result = [];
   let index = 0;
-  
   for (let i = 0; i < book.borrows.length; i++) {
     const bookId = book.borrows[i].id;
     let acctAdd = addAcct(accounts, bookId);
