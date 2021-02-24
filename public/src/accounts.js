@@ -16,13 +16,12 @@ function sortAccountsByLastName(accounts) {
 }
 
 function getTotalNumberOfBorrows(account, books) {
-  let result = 0;
-  for (let i in books) {
-    for (let j in books[i].borrows) {
-      if (books[i].borrows[j].id === account.id) result++;
-    }
-  }
-  return result;
+  const borrowsArray = books.map((book) => {
+    const {borrows} = book;
+    return borrows;
+  });
+  const filterId = borrowsArray.flat().filter((borrow) => borrow.id === account.id);  
+  return filterId.length;
 }
 
 function getBooksPossessedByAccount(account, books, authors) {
@@ -30,14 +29,12 @@ function getBooksPossessedByAccount(account, books, authors) {
   for (let i in books) {
     for (let j in books[i].borrows) {
       if (books[i].borrows[j].id === account.id && books[i].borrows[j].returned === false) {
-
       let authorAdd = addAuthor(books[i].authorId, authors);
       books[i].author = authorAdd;
       results.push(books[i]);
       }
     }
-  }  
-  console.log(results);
+  }
   return results;
 }
 function addAuthor(authorId, authors) {
